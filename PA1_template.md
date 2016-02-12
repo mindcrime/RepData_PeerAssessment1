@@ -7,8 +7,8 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
 
+```r
 activityData <-  read.csv("data/activity.csv")
 
 
@@ -19,10 +19,11 @@ byDate <- split(activityData, as.Date(activityData$date))
 totalPerDay <- lapply( names(byDate), function(x) sum( byDate[[x]]$steps,na.rm=TRUE ) )
 
 hist( unlist(totalPerDay) )
+```
 
+![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png)
 
-
-
+```r
 ## What is the average daily activity pattern?
 
 
@@ -32,5 +33,4 @@ hist( unlist(totalPerDay) )
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-
 ```
