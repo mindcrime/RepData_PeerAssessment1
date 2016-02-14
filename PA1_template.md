@@ -8,15 +8,12 @@ output:
 ---
 
 
-```{r setup, include=FALSE}
-opts_chunk$set(dev = 'pdf')
-options("scipen"=100, "digits"=4)
-```
+
 
 
 ## Loading and preprocessing the data
-```{r}
 
+```r
 activityData <-  read.csv("data/activity.csv")
 
 byDate <- split(activityData, as.Date(activityData$date))
@@ -27,34 +24,38 @@ totalPerDay = unlist(totalPerDayAsList)
 
 ## What is mean total number of steps taken per day?
 
-```{r fig.height=3,fig.cap="Histogram / Total Steps Per Day"}
+
+```r
 hist( totalPerDay, main="Histogram / Total Steps Per Day" )
 ```
 
+![Histogram / Total Steps Per Day](figure/unnamed-chunk-2-1.pdf)
 
-**Mean**: `r mean(totalPerDay,na.rm=TRUE)`
 
-**Median**: `r median(totalPerDay,na.rm=TRUE)`
+**Mean**: 9354.2295
+
+**Median**: 10395
 
 \pagebreak
 
 ## What is the average daily activity pattern?
 
-```{r fig.height=3,fig.cap="Time Series / Mean Steps by Interval"}
 
+```r
 byInterval <- split(activityData, activityData$interval)
 meanByIntervalList <- lapply( names(byInterval), function(x) mean( byInterval[[x]]$steps,na.rm=TRUE ))
 
 meanByInterval <- unlist(meanByIntervalList)
 
 plot( names(byInterval), meanByInterval, type="l", xlab="Interval", ylab="Mean Steps")
-
 ```
+
+![Time Series / Mean Steps by Interval](figure/unnamed-chunk-3-1.pdf)
 
 \pagebreak
 
-```{r}
 
+```r
 indexOfHighVal = 0
 highVal = 0
 for(i in 1:length(byInterval))
@@ -67,16 +68,15 @@ for(i in 1:length(byInterval))
 }
 
 highInterval = names(byInterval)[indexOfHighVal]
-
 ```
 
-**Interval With Max Activity**: `r highInterval`
+**Interval With Max Activity**: 835
 
 
 ## Imputing missing values
 
-```{r}
 
+```r
 # calculate the number of rows with missing data
 numRowsWithNA <- sum(is.na(activityData$steps))
 
@@ -106,13 +106,16 @@ totalPerDayAsListCopy <- lapply( names(byDateCopy), function(x) sum( byDateCopy[
 totalPerDayCopy = unlist(totalPerDayAsListCopy)
 ```
 
-```{r fig.height=3,fig.cap="Histogram / Total Steps Per Day (w/ imputed data)"}
+
+```r
 hist( totalPerDayCopy, main="Histogram / Total Steps Per Day (w/ imputed data)" )
 ```
 
-**Mean**: `r mean(totalPerDayCopy)`
+![Histogram / Total Steps Per Day (w/ imputed data)](figure/unnamed-chunk-6-1.pdf)
 
-**Median**: `r median(totalPerDayCopy)`
+**Mean**: 10766.1887
+
+**Median**: 10766.1887
 
 ### Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -125,7 +128,8 @@ distribution / bell curve, compared to before.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r fig.height=5,fig.cap="Time Series / Mean Steps by Interval - Weekend/Weekday" }
+
+```r
 activityDataCopy$periodFactor <- ifelse( weekdays( as.Date(activityDataCopy$date) ) == "Saturday" | weekdays(as.Date(activityDataCopy$date)) == "Sunday", "Weekend", "Weekday")
 
 byPeriod <- split(activityDataCopy, activityDataCopy$periodFactor)
@@ -153,5 +157,6 @@ meanByIntervalWeekday <- unlist(meanByIntervalListWeekday)
 par(mfrow=c(2,1))
 plot( names(byInterval), meanByIntervalWeekday, type="l", main="Weekday", xlab="Interval", ylab="Mean Steps" )
 plot( names(byInterval), meanByIntervalWeekend, type="l", main="Weekend", xlab="Interval", ylab="Mean Steps" )
-
 ```
+
+![Time Series / Mean Steps by Interval - Weekend/Weekday](figure/unnamed-chunk-7-1.pdf)
