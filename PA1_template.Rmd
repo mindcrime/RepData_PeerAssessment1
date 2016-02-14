@@ -9,7 +9,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-opts_chunk$set(dev = 'pdf')
+# opts_chunk$set(dev = 'pdf')
 options("scipen"=100, "digits"=4)
 ```
 

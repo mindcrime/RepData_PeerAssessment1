@@ -29,7 +29,7 @@ totalPerDay = unlist(totalPerDayAsList)
 hist( totalPerDay, main="Histogram / Total Steps Per Day" )
 ```
 
-![Histogram / Total Steps Per Day](figure/unnamed-chunk-2-1.pdf)
+![Histogram / Total Steps Per Day](figure/unnamed-chunk-2-1.png)
 
 
 **Mean**: 9354.2295
@@ -50,7 +50,7 @@ meanByInterval <- unlist(meanByIntervalList)
 plot( names(byInterval), meanByInterval, type="l", xlab="Interval", ylab="Mean Steps")
 ```
 
-![Time Series / Mean Steps by Interval](figure/unnamed-chunk-3-1.pdf)
+![Time Series / Mean Steps by Interval](figure/unnamed-chunk-3-1.png)
 
 \pagebreak
 
@@ -111,7 +111,7 @@ totalPerDayCopy = unlist(totalPerDayAsListCopy)
 hist( totalPerDayCopy, main="Histogram / Total Steps Per Day (w/ imputed data)" )
 ```
 
-![Histogram / Total Steps Per Day (w/ imputed data)](figure/unnamed-chunk-6-1.pdf)
+![Histogram / Total Steps Per Day (w/ imputed data)](figure/unnamed-chunk-6-1.png)
 
 **Mean**: 10766.1887
 
@@ -159,4 +159,4 @@ plot( names(byInterval), meanByIntervalWeekday, type="l", main="Weekday", xlab="
 plot( names(byInterval), meanByIntervalWeekend, type="l", main="Weekend", xlab="Interval", ylab="Mean Steps" )
 ```
 
-![Time Series / Mean Steps by Interval - Weekend/Weekday](figure/unnamed-chunk-7-1.pdf)
+![Time Series / Mean Steps by Interval - Weekend/Weekday](figure/unnamed-chunk-7-1.png)
