@@ -125,4 +125,32 @@ distribution / bell curve, compared to before.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+```{r fig.height=5,fig.cap="Caption4" }
 activityDataCopy$periodFactor <- ifelse( weekdays( as.Date(activityDataCopy$date) ) == "Saturday" | weekdays(as.Date(activityDataCopy$date)) == "Sunday", "Weekend", "Weekday")
+
+byPeriod <- split(activityDataCopy, activityDataCopy$periodFactor)
+
+# byPeriod$Weekday
+# byPeriod$Weekend
+
+byDateWeekend <- split(byPeriod$Weekend, as.Date(byPeriod$Weekend$date))
+totalPerDayAsListWeekend <- lapply( names(byDateWeekend), function(x) sum( byDateWeekend[[x]]$steps,na.rm=TRUE ) )
+totalPerDayWeekend = unlist(totalPerDayAsListWeekend)
+byIntervalWeekend <- split(byPeriod$Weekend, byPeriod$Weekend$interval)
+meanByIntervalListWeekend <- lapply( names(byIntervalWeekend), function(x) mean( byIntervalWeekend[[x]]$steps,na.rm=TRUE ))
+meanByIntervalWeekend <- unlist(meanByIntervalListWeekend)
+
+
+
+byDateWeekday <- split(byPeriod$Weekday, as.Date(byPeriod$Weekday$date))
+totalPerDayAsListWeekday <- lapply( names(byDateWeekday), function(x) sum( byDateWeekday[[x]]$steps,na.rm=TRUE ) )
+totalPerDayWeekday = unlist(totalPerDayAsListWeekday)
+byIntervalWeekday <- split(byPeriod$Weekday, byPeriod$Weekday$interval)
+meanByIntervalListWeekday <- lapply( names(byIntervalWeekday), function(x) mean( byIntervalWeekday[[x]]$steps,na.rm=TRUE ))
+meanByIntervalWeekday <- unlist(meanByIntervalListWeekday)
+
+
+par(mfrow=c(2,1))
+plot( names(byInterval), meanByIntervalWeekday, type="l", main="Weekday")
+plot( names(byInterval), meanByIntervalWeekend, type="l", main="Weekend")
+```
