@@ -3,7 +3,15 @@ title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
     keep_md: true
+  pdf_document:
+    fig_caption: yes
 ---
+
+
+```{r setup, include=FALSE}
+opts_chunk$set(dev = 'pdf')
+options("scipen"=100, "digits"=4)
+```
 
 
 ## Loading and preprocessing the data
@@ -11,26 +19,110 @@ output:
 
 activityData <-  read.csv("data/activity.csv")
 
+byDate <- split(activityData, as.Date(activityData$date))
+
+totalPerDayAsList <- lapply( names(byDate), function(x) sum( byDate[[x]]$steps,na.rm=TRUE ) )
+totalPerDay = unlist(totalPerDayAsList)
+```
 
 ## What is mean total number of steps taken per day?
 
-byDate <- split(activityData, as.Date(activityData$date))
-
-totalPerDay <- lapply( names(byDate), function(x) sum( byDate[[x]]$steps,na.rm=TRUE ) )
-
-hist( unlist(totalPerDay) )
+```{r fig.height=3,fig.cap="Caption"}
+hist( totalPerDay )
+```
 
 
+**Mean**: `r mean(totalPerDay,na.rm=TRUE)`
 
+**Median**: `r median(totalPerDay,na.rm=TRUE)`
+
+\pagebreak
 
 ## What is the average daily activity pattern?
 
+```{r fig.height=3,fig.cap="Caption2"}
+
+byInterval <- split(activityData, activityData$interval)
+meanByIntervalList <- lapply( names(byInterval), function(x) mean( byInterval[[x]]$steps,na.rm=TRUE ))
+
+meanByInterval <- unlist(meanByIntervalList)
+
+plot( names(byInterval), meanByInterval, type="l")
+
+```
+
+\pagebreak
+
+```{r}
+
+indexOfHighVal = 0
+highVal = 0
+for(i in 1:length(byInterval))
+{
+  if( meanByInterval[i] > highVal )
+  {
+      highVal = meanByInterval[i]
+      indexOfHighVal = i
+  }
+}
+
+highInterval = names(byInterval)[indexOfHighVal]
+
+```
+
+**Interval With Max Activity**: `r highInterval`
 
 
 ## Imputing missing values
 
+```{r}
+
+# calculate the number of rows with missing data
+numRowsWithNA <- sum(is.na(activityData$steps))
+
+# copy the original dataframe
+activityDataCopy = data.frame( activityData )
+
+# for each row with an NA, set the value to be a derived value
+# we'll just check the interval ID and use the mean for that
+# interval, since we already have that calculated
+naIdx <- which(is.na(activityData$steps))
+names(meanByInterval) <- names(byInterval)
+for( i in 1:length(naIdx) )
+{
+	idxToUpdate <- naIdx[i]
+
+	intervalForUpdate <- activityDataCopy$interval[idxToUpdate]
+	
+	newVal <- meanByInterval[[as.character(intervalForUpdate)]]
+
+	activityDataCopy[idxToUpdate,1] <- newVal
+}
+
+
+byDateCopy <- split(activityDataCopy, as.Date(activityDataCopy$date))
+
+totalPerDayAsListCopy <- lapply( names(byDateCopy), function(x) sum( byDateCopy[[x]]$steps,na.rm=TRUE ) )
+totalPerDayCopy = unlist(totalPerDayAsListCopy)
+```
+
+```{r fig.height=3,fig.cap="Caption3"}
+hist( totalPerDayCopy )
+```
+
+**Mean**: `r mean(totalPerDayCopy)`
+
+**Median**: `r median(totalPerDayCopy)`
+
+### Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+Yes, using the imputed values raises the number of steps, and the histogram now appears to show a distribution that's closer to a normal
+distribution / bell curve, compared to before.  
+
+
+\pagebreak
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```
+activityDataCopy$periodFactor <- ifelse( weekdays( as.Date(activityDataCopy$date) ) == "Saturday" | weekdays(as.Date(activityDataCopy$date)) == "Sunday", "Weekend", "Weekday")
